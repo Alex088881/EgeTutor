@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EgeTutor.Services", "EgeTut
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EgeTutor.Application", "EgeTutor.Application\EgeTutor.Application.csproj", "{6DB7177B-8BB9-42C5-B390-DB2F405FD1F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EgeTutor.Tests", "EgeTutor.Tests\EgeTutor.Tests.csproj", "{801583A2-5007-4C85-9FB3-928B1ECA83E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{6DB7177B-8BB9-42C5-B390-DB2F405FD1F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DB7177B-8BB9-42C5-B390-DB2F405FD1F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DB7177B-8BB9-42C5-B390-DB2F405FD1F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{801583A2-5007-4C85-9FB3-928B1ECA83E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{801583A2-5007-4C85-9FB3-928B1ECA83E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{801583A2-5007-4C85-9FB3-928B1ECA83E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{801583A2-5007-4C85-9FB3-928B1ECA83E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
