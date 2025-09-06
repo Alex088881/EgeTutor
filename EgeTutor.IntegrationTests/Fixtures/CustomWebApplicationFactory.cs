@@ -5,34 +5,28 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace EgeTutor.IntegrationTests.Fixtures
 {
-    public class CustomWebApplicationFactory:WebApplicationFactory<Program>
+    public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.ConfigureServices(services => {
-                // Удаляем регистрацию реального DbContext
-                var descroptor = services.SingleOrDefault(d=>d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
-                if (descroptor != null)
+            builder.ConfigureServices(services =>
+            {
+                // Находим и удаляем регистрацию DbContext
+                var descriptor = services.SingleOrDefault(
+                    d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
+
+                if (descriptor != null)
                 {
-                    services.Remove(descroptor);
+                    services.Remove(descriptor);
                 }
-                // Добавляем InMemory базу данных для тестов
+
+                // Регистрируем InMemory базу
                 services.AddDbContext<ApplicationDbContext>(options =>
-                {
-                    options.UseInMemoryDatabase("TestDatabase");
-                });
-
-                // Создаём scope для получения сервисов
-                var serviceProvider = services.BuildServiceProvider();
-                using var scope = serviceProvider.CreateScope();
-                var scopedSevices = scope.ServiceProvider;
-                var db = scopedSevices.GetRequiredService<ApplicationDbContext>();
-
-                // Гарантируем, что база данных создана
-                db.Database.EnsureCreated();
+                    options.UseInMemoryDatabase("TestDatabase"));
             });
         }
     }
