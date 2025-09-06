@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EgeTutor.API.DTOs
+namespace EgeTutor.Application.DTOs
 {
     public class CreateQuestionDto
     {

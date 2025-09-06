@@ -1,4 +1,4 @@
-﻿using EgeTutor.API.DTOs;
+﻿using EgeTutor.Application.DTOs;
 using EgeTutor.Application.Interfaces;
 using EgeTutor.Core.Exceptions;
 using EgeTutor.Core.Interfaces;

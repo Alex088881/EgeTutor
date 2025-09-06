@@ -1,6 +1,5 @@
 ﻿using EgeTutor.Application.DTOs.TopicDTOs;
 using EgeTutor.Application.Interfaces;
-using EgeTutor.Core.Enums;
 using EgeTutor.Core.Exceptions;
 using EgeTutor.Core.Interfaces;
 using EgeTutor.Core.Models;

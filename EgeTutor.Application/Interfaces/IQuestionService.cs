@@ -1,4 +1,6 @@
-﻿using EgeTutor.API.DTOs;
+﻿
+
+using EgeTutor.Application.DTOs;
 
 namespace EgeTutor.Application.Interfaces
 {

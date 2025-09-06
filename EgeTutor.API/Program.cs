@@ -35,10 +35,6 @@ namespace EgeTutor.API
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();
 
-            // Логирование для middleware
-            builder.Services.AddScoped<ILogger<GlobalExceptionHandler>, Logger<GlobalExceptionHandler>>();
-            builder.Services.AddScoped<ILogger<RequestLoggingMiddleware>, Logger<RequestLoggingMiddleware>>();
-
             // JWT
             builder.Services.AddScoped<ITokenService>(sp =>
                 new TokenService(builder.Configuration["Jwt:Secret"]!, builder.Configuration["Jwt:Issuer"]!));

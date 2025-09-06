@@ -1,9 +1,6 @@
-﻿using EgeTutor.API.DTOs;
+﻿using EgeTutor.Application.DTOs;
 using EgeTutor.Application.Interfaces;
-using EgeTutor.Application.Services;
 using EgeTutor.Core.Enums;
-using EgeTutor.Core.Interfaces;
-using EgeTutor.Core.Models;
 using EgeTutor.Persistence.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

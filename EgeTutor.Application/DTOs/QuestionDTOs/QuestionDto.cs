@@ -1,4 +1,4 @@
-﻿namespace EgeTutor.API.DTOs
+﻿namespace EgeTutor.Application.DTOs
 {
     public record QuestionDto(
         int Id,
