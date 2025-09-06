@@ -12,14 +12,17 @@ namespace EgeTutor.Application.Services
 
         public async Task<GetTopicsResponce> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var topics = await _topicRepository.GetAllAsync(cancellationToken) ?? throw new Exception($"{nameof(GetAllAsync)}: topics is not found");
+            var topics = await _topicRepository.GetAllAsync(cancellationToken) 
+                ?? throw new ArgumentNullException($"{nameof(GetAllAsync)}: topics is not found");
+
             var topicDtos =  topics.Select(t => new TopicDto(t.Id, t.Name, t.Description)).ToList();
             return new GetTopicsResponce(topicDtos);
         }
 
         public async Task<TopicDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            var result = await _topicRepository.GetByIdAsync(id, cancellationToken) ?? throw new NotFoundException(nameof(Topic), id);
+            var result = await _topicRepository.GetByIdAsync(id, cancellationToken) 
+                ?? throw new NotFoundException(nameof(Topic), id);
             return (new TopicDto(result.Id, result.Name, result.Description));
         }
 

@@ -13,7 +13,7 @@ namespace EgeTutor.Application.Services
 
         public async Task<GetQuestionsResponce> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var questions = await _questionRepository.GetAllAsync(cancellationToken) ?? throw new Exception("Questions not found");
+            var questions = await _questionRepository.GetAllAsync(cancellationToken) ?? throw new ArgumentNullException("Questions not found");
 
             var questionsDto = questions
                 .Select(q => new QuestionDto(
@@ -30,7 +30,8 @@ namespace EgeTutor.Application.Services
 
         public async Task<QuestionDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            var question = await _questionRepository.GetByIdAsync(id, cancellationToken) ?? throw new Exception($"{nameof(GetByIdAsync)}: question with id{id} not found");
+            var question = await _questionRepository.GetByIdAsync(id, cancellationToken) 
+                ?? throw new ArgumentNullException($"{nameof(GetByIdAsync)}: question with id{id} not found");
 
             var questionDto = new QuestionDto(question.Id, question.Text, question.CorrectAnswer, question.ImageUrl, question.TopicId, question.AnswerUrl);
             return questionDto;
@@ -64,7 +65,7 @@ namespace EgeTutor.Application.Services
         public async Task Update(int id, UpdateQuestionDto updateDto, CancellationToken cancellationToken = default)
         {
             var existingQuestion = await _questionRepository.GetByIdAsync(id, cancellationToken)
-                ?? throw new Exception($"Question with id{id} not found");
+                ?? throw new ArgumentNullException($"Question with id{id} not found");
 
             if (string.IsNullOrWhiteSpace(updateDto.Text))
                 throw new ArgumentException("Text cannot be empty");
