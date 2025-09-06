@@ -1,18 +1,16 @@
 ﻿using EgeTutor.Application.DTOs.TopicDTOs;
 using EgeTutor.Application.Interfaces;
 using EgeTutor.Core.Enums;
+using EgeTutor.Core.Exceptions;
 using EgeTutor.Core.Interfaces;
 using EgeTutor.Core.Models;
 
 namespace EgeTutor.Application.Services
 {
-    public class TopicService : ITopicService
+    public class TopicService(ITopicRepository topicRepository) : ITopicService
     {
-        private readonly ITopicRepository _topicRepository;
-        public TopicService(ITopicRepository topicRepository)
-        {
-            _topicRepository = topicRepository;
-        }
+        private readonly ITopicRepository _topicRepository = topicRepository;
+
         public async Task<GetTopicsResponce> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var topics = await _topicRepository.GetAllAsync(cancellationToken) ?? throw new Exception($"{nameof(GetAllAsync)}: topics is not found");
@@ -22,7 +20,7 @@ namespace EgeTutor.Application.Services
 
         public async Task<TopicDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            var result = await _topicRepository.GetByIdAsync(id, cancellationToken) ?? throw new Exception($"Topic with id {id} is not found");
+            var result = await _topicRepository.GetByIdAsync(id, cancellationToken) ?? throw new NotFoundException(nameof(Topic), id);
             return (new TopicDto(result.Id, result.Name, result.Description));
         }
 
@@ -36,7 +34,7 @@ namespace EgeTutor.Application.Services
         public async Task Update(int id, string name, string? description = null, CancellationToken cancellationToken = default)
         {
             var existingTopic = await _topicRepository.GetByIdAsync(id, cancellationToken) 
-                ?? throw new Exception($"Topic with id {id} is not found");
+                ?? throw new NotFoundException(nameof(Topic), id);
 
             existingTopic.UpdateName(name);
             if (description is not null)

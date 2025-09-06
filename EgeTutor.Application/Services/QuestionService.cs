@@ -1,20 +1,16 @@
 ﻿using EgeTutor.API.DTOs;
 using EgeTutor.Application.Interfaces;
+using EgeTutor.Core.Exceptions;
 using EgeTutor.Core.Interfaces;
 using EgeTutor.Core.Models;
 
 namespace EgeTutor.Application.Services
 {
-    public class QuestionService : IQuestionService
+    public class QuestionService(IQuestionRepository questionRepository, ITopicRepository topicRepository) : IQuestionService
     {
-        private readonly IQuestionRepository _questionRepository;
-        private readonly ITopicRepository _topicRepository;
+        private readonly IQuestionRepository _questionRepository = questionRepository;
+        private readonly ITopicRepository _topicRepository = topicRepository;
 
-        public QuestionService(IQuestionRepository questionRepository, ITopicRepository topicRepository)
-        {
-            _questionRepository = questionRepository;
-            _topicRepository = topicRepository;
-        }
         public async Task<GetQuestionsResponce> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var questions = await _questionRepository.GetAllAsync(cancellationToken) ?? throw new Exception("Questions not found");
@@ -44,8 +40,8 @@ namespace EgeTutor.Application.Services
         {
             var topicExists = await _topicRepository.ExistsAsync(createDto.TopicId, cancellationToken);
             if (!topicExists)
-                throw new ArgumentException($"Topic with id {createDto.TopicId} does not exist");
-            
+                throw new ValidationException($"Topic with id {createDto.TopicId} does not exist");
+
 
             var question = new Question(
               createDto.Text,

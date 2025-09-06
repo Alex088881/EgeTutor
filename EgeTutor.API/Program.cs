@@ -1,3 +1,4 @@
+using EgeTutor.API.Middleware;
 using EgeTutor.Application.Interfaces;
 using EgeTutor.Application.Services;
 using EgeTutor.Core.Interfaces;
@@ -19,18 +20,26 @@ namespace EgeTutor.API
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
-            builder.Services.AddScoped<DbInitializer>();
 
+            // Регистрация сервисов
+            builder.Services.AddScoped<DbInitializer>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ITopicRepository, TopicRepository>();
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
             builder.Services.AddScoped<ITopicService, TopicService>();
-            //builder.Services.AddScoped<UserService, UserService>();
-
-
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+
+            // Обработка исключений
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
+
+            // Логирование для middleware
+            builder.Services.AddScoped<ILogger<GlobalExceptionHandler>, Logger<GlobalExceptionHandler>>();
+            builder.Services.AddScoped<ILogger<RequestLoggingMiddleware>, Logger<RequestLoggingMiddleware>>();
+
+            // JWT
             builder.Services.AddScoped<ITokenService>(sp =>
                 new TokenService(builder.Configuration["Jwt:Secret"]!, builder.Configuration["Jwt:Issuer"]!));
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -49,6 +58,7 @@ namespace EgeTutor.API
 
             builder.Services.AddAuthorization();
 
+            // Database
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 // Используй PostgreSQL (Npgsql) или другую БД
@@ -59,7 +69,11 @@ namespace EgeTutor.API
                 options.EnableSensitiveDataLogging(); // Только для разработки!
             });
 
+
+
             var app = builder.Build();
+            app.UseExceptionHandler();
+            app.UseMiddleware<RequestLoggingMiddleware>();
 
             using (var scope = app.Services.CreateScope())
             {
@@ -80,6 +94,7 @@ namespace EgeTutor.API
             app.UseAuthorization();
 
             app.MapControllers();
+
 
             app.Run();
         }
