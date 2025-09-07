@@ -55,5 +55,42 @@ namespace EgeTutor.Tests.Application.Services
             Assert.NotNull(capturedQuestion);
             Assert.Equal("Test question", capturedQuestion.Text);
         }
+        [Fact]
+        public async Task CreateAsync_TopicNotExists_ThrowsValidationException()
+        {
+            // Arrange
+            var createDto = new CreateQuestionDto
+            {
+                Text = "Test question",
+                CorrectAnswer = "Test answer",
+                TopicId = 999
+            };
+
+            _mockTopicRepository.Setup(x => x.ExistsAsync(999, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ValidationException>(() =>
+                _questionService.CreateAsync(createDto));
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_QuestionExists_ReturnsQuestionDto()
+        {
+            // Arrange
+            var question = new Question("Test question", "Test answer", 1);
+            //question.GetType().GetProperty("Id")?.SetValue(question, 1);
+
+            _mockQuestionRepository.Setup(x => x.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(question);
+
+            // Act
+            var result = await _questionService.GetByIdAsync(1);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(0, result.Id);
+            Assert.Equal("Test question", result.Text);
+        }
     }
 }
