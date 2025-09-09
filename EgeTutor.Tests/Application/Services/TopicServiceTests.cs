@@ -1,4 +1,5 @@
 ﻿using EgeTutor.Application.Services;
+using EgeTutor.Core.Exceptions;
 using EgeTutor.Core.Interfaces;
 using EgeTutor.Core.Models;
 using Moq;
@@ -43,6 +44,53 @@ namespace EgeTutor.Tests.Application.Services
 
             Assert.NotNull(capturedTopic);
             Assert.Equal("Test Topic", capturedTopic.Name);
+        }
+        [Fact]
+        public async Task GetByIdAsync_TopicExists_ReturnsTopicDto()
+        {
+            // Arrange
+            var topic = new Topic("Test Topic", "Test Description");
+
+            _mockTopicRepository.Setup(x => x.GetByIdAsync(0, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(topic);
+
+            // Act
+            var result = await _topicService.GetByIdAsync(0);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(0, result.Id);
+            Assert.Equal("Test Topic", result.Name);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_TopicNotExists_ThrowsNotFoundException()
+        {
+            // Arrange
+            _mockTopicRepository.Setup(x => x.GetByIdAsync(999, It.IsAny<CancellationToken>()))
+                .ReturnsAsync((Topic?)null);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<NotFoundException>(() =>
+                _topicService.GetByIdAsync(999));
+        }
+
+        [Fact]
+        public async Task Update_ValidData_UpdatesTopic()
+        {
+            // Arrange
+            var existingTopic = new Topic("Old Name", "Old Description");
+
+            _mockTopicRepository.Setup(x => x.GetByIdAsync(0, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(existingTopic);
+
+            // Act
+            await _topicService.Update(0, "New Name", "New Description");
+
+            // Assert
+            _mockTopicRepository.Verify(x => x.Update(It.Is<Topic>(t =>
+                t.Name == "New Name" &&
+                t.Description == "New Description"), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
