@@ -58,6 +58,22 @@ namespace EgeTutor.Tests.Services
         }
 
         [Fact]
+        public async Task RegisterUserAsync_ExistingUser_ReturnsNull()
+        {
+            // Arrange
+            var existingUser = new User { Email = "test@example.com" };
+            _mockUserRepository.Setup(x => x.GetByEmailAsync("test@example.com"))
+                .ReturnsAsync(existingUser);
+
+            // Act
+            var result = await _authService.RegisterUserAsync(
+                "test@example.com", "password123", "Test", "User");
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
         public async Task LoginUserAsync_ValidCredentials_ReturnsToken()
         {
             // Arrange
@@ -83,6 +99,23 @@ namespace EgeTutor.Tests.Services
 
             // Assert
             Assert.Equal(token, result);
+        }
+        [Fact]
+        public async Task LoginUserAsync_InvalidPassword_ReturnsNull()
+        {
+            // Arrange
+            var user = new User { Email = "test@example.com", PasswordHash = "hashed_password" };
+            _mockUserRepository.Setup(x => x.GetByEmailAsync("test@example.com"))
+                .ReturnsAsync(user);
+
+            _mockPasswordHasher.Setup(x => x.VerifyPassword("wrong_password", "hashed_password"))
+                .Returns(false);
+
+            // Act
+            var result = await _authService.LoginUserAsync("test@example.com", "wrong_password");
+
+            // Assert
+            Assert.Null(result);
         }
 
     }
