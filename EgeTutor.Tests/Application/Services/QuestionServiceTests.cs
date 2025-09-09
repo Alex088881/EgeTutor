@@ -92,5 +92,39 @@ namespace EgeTutor.Tests.Application.Services
             Assert.Equal(0, result.Id);
             Assert.Equal("Test question", result.Text);
         }
+        [Fact]
+        public async Task GetByIdAsync_QuestionNotExists_ThrowsException()
+        {
+            // Arrange
+            _mockQuestionRepository.Setup(x=>x.GetByIdAsync(999, It.IsAny<CancellationToken>()))
+                .ReturnsAsync((Question?)null);
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _questionService.GetByIdAsync(999));
+        }
+        [Fact]
+        public async Task Update_ValidData_UpdatesQuestion()
+        {
+            // Arrange
+            var existingQuestion = new Question("Old text", "Old answer", 1);
+
+            var updateDto = new UpdateQuestionDto
+            {
+                Text = "New text",
+                CorrectAnswer = "New answer",
+                TopicId = 2
+            };
+
+            _mockQuestionRepository.Setup(x => x.GetByIdAsync(0, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(existingQuestion);
+
+            // Act
+            await _questionService.Update(0, updateDto);
+
+            // Assert
+            _mockQuestionRepository.Verify(x => x.Update(It.Is<Question>(q =>
+                q.Text == "New text" &&
+                q.CorrectAnswer == "New answer" &&
+                q.TopicId == 2), It.IsAny<CancellationToken>()), Times.Once);
+        }
     }
 }
