@@ -19,6 +19,16 @@ namespace EgeTutor.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReactApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
             builder.Services.AddControllers();
 
             // Регистрация сервисов
@@ -86,10 +96,14 @@ namespace EgeTutor.API
                 }
             }
 
+            app.UseRouting();
+            app.UseCors("AllowReactApp");
+
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
+
 
 
             app.Run();
