@@ -67,7 +67,6 @@ namespace EgeTutor.API
             // Database
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                // Используй PostgreSQL (Npgsql) или другую БД
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 
                 // Для отладки: логируем SQL-запросы в консоль (убери в продакшене!)

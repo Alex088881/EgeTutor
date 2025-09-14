@@ -1,7 +1,8 @@
 ﻿namespace EgeTutor.Core.Models
 {
-    public class Topic:BaseEntity
+    public class Topic
     {
+        public int Id { get; private set; }
         public string Name { get; private set; } = string.Empty;
         public string? Description { get; private set; }
         public List<Question> Questions { get;private set; } = [];

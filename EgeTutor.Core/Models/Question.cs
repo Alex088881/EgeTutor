@@ -1,7 +1,8 @@
 ﻿namespace EgeTutor.Core.Models
 {
-    public class Question:BaseEntity
+    public class Question
     {
+        public int Id { get; private set; }
         public string Text { get; private set; } = string.Empty;
         public string CorrectAnswer { get; private set; } = string.Empty;
         public string? ImageUrl { get; private set; }
