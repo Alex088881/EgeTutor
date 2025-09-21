@@ -64,7 +64,7 @@ namespace EgeTutor.API.Controllers
             }
 
             // Возвращаем JWT токен клиенту
-            return Ok(new { Token = token });
+            return Ok(new { token = token });
         }
 
     }
